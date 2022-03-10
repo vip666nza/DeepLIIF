@@ -562,7 +562,7 @@ For DeepLIIF there are 4 main stages (see Figure 3):
 * <code>G1-4</code> run the ResNets to generate the Hematoxylin, DAPI, LAP2 and Ki67 masks.
 * <code>G51-5</code> run the UNets and apply <code>Weighted Average</code> to generate the Segmentation image.
 * <code>Aggregate</code> aggregate and serialize the results and return to user.</p>
-<p><img alt="DeepLIIF Torchserve workflow" src="./images/deepliif_torchserve_workflow.png" />
+<p><img alt="DeepLIIF Torchserve workflow" src="images/deepliif_torchserve_workflow.png" />
 <strong>Figure 3</strong>. <em>Composition of DeepLIIF nets into a Torchserve workflow</em></p>
 <p>In practice, users need to call this workflow for each tile generated from the original image.<br />
 A common use case scenario would be:
