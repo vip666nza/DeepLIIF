@@ -134,7 +134,7 @@ class DeepLIIFModel(BaseModel):
         self.fake_B_5_2 = self.netG52(self.fake_B_1)    # Segmentation mask generator from Hematoxylin input image
         self.fake_B_5_3 = self.netG53(self.fake_B_2)    # Segmentation mask generator from mpIF DAPI input image
         self.fake_B_5_4 = self.netG54(self.fake_B_3)    # Segmentation mask generator from mpIF Lap2 input image
-        self.fake_B_5_5 = self.netG55(self.fake_B_4)    # Segmentation mask generator from mpIF Ki67 input image
+        self.fake_B_5_5 = self.netG55(self.fake_B_4)    # Segmentation mask generator from mpIF /Ki67 input image
         self.fake_B_5 = torch.stack([torch.mul(self.fake_B_5_1, self.seg_weights[0]),
                                      torch.mul(self.fake_B_5_2, self.seg_weights[1]),
                                      torch.mul(self.fake_B_5_3, self.seg_weights[2]),
