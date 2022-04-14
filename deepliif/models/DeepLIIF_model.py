@@ -140,18 +140,32 @@ class DeepLIIFModel(BaseModel):
                                      torch.mul(self.fake_B_5_3, self.seg_weights[2]),
                                      torch.mul(self.fake_B_5_4, self.seg_weights[3]),
                                      torch.mul(self.fake_B_5_5, self.seg_weights[4])]).sum(dim=0)
-
+        # by Zeeon.N
+        # torch.stack(tensors, dim=0): Concatenates a sequence of tensors along a new dimention
+        #                              All tensors need to be of the same size. 
+        # by Zeeon.N
+        
     def backward_D(self):
         """Calculate GAN loss for the discriminators"""
         fake_AB_1 = torch.cat((self.real_A, self.fake_B_1), 1)  # Conditional GANs; feed IHC input and Hematoxtlin output to the discriminator
         fake_AB_2 = torch.cat((self.real_A, self.fake_B_2), 1)  # Conditional GANs; feed IHC input and mpIF DAPI output to the discriminator
         fake_AB_3 = torch.cat((self.real_A, self.fake_B_3), 1)  # Conditional GANs; feed IHC input and mpIF Lap2 output to the discriminator
         fake_AB_4 = torch.cat((self.real_A, self.fake_B_4), 1)  # Conditional GANs; feed IHC input and mpIF Ki67 output to the discriminator
-
+        # by Zeeon.N
+        # torch.cat(tensors, dim=0): Concatenates the given sequence of tensos in the given dimenstion (0 along the cols, 1 along the rows).
+        #                            why feed IHC input and generated mpIF output to the discriminator?
+        #                            doesn't it should be [real mpIF input, generated mpIF output] -> discriminator? 
+        # by Zeeon.N
+        
         pred_fake_1 = self.netD1(fake_AB_1.detach())
         pred_fake_2 = self.netD2(fake_AB_2.detach())
         pred_fake_3 = self.netD3(fake_AB_3.detach())
         pred_fake_4 = self.netD4(fake_AB_4.detach())
+        # by Zeeon.N
+        # torch.tensors.detach(): Returns a new tensor, detached from the current graph.
+        #                         Suppose there are modelA and modelB, we need to take A's output as B's input,
+        #                         and only optimize modelB during trainig. we can do this -> input_B = output_A.detach()
+        # by Zeeon.N_
 
         fake_AB_5_1 = torch.cat((self.real_A, self.fake_B_5), 1)    # Conditional GANs; feed IHC input and Segmentation mask output to the discriminator
         fake_AB_5_2 = torch.cat((self.real_B_1, self.fake_B_5), 1)  # Conditional GANs; feed Hematoxylin input and Segmentation mask output to the discriminator
