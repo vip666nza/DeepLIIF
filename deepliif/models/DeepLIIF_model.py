@@ -100,7 +100,10 @@ class DeepLIIFModel(BaseModel):
 
             params = list(self.netD1.parameters()) + list(self.netD2.parameters()) + list(self.netD3.parameters()) + list(self.netD4.parameters()) + list(self.netD51.parameters()) + list(self.netD52.parameters()) + list(self.netD53.parameters()) + list(self.netD54.parameters()) + list(self.netD55.parameters())
             self.optimizer_D = torch.optim.Adam(params, lr=opt.lr, betas=(opt.beta1, 0.999))
-
+            # added by Zeeon.N
+            # it seems that optimizer_D also optimize parameters of G1...G5, G51...G55
+            # added by Zeeon.N
+            
             self.optimizers.append(self.optimizer_G)
             self.optimizers.append(self.optimizer_D)
 
@@ -135,7 +138,7 @@ class DeepLIIFModel(BaseModel):
         self.fake_B_5_3 = self.netG53(self.fake_B_2)    # Segmentation mask generator from mpIF DAPI input image
         self.fake_B_5_4 = self.netG54(self.fake_B_3)    # Segmentation mask generator from mpIF Lap2 input image
         self.fake_B_5_5 = self.netG55(self.fake_B_4)    # Segmentation mask generator from mpIF /Ki67 input image
-        self.fake_B_5 = torch.stack([torch.mul(self.fake_B_5_1, self.seg_weights[0]),
+        self.fake_B_5 = torch.stack([torch.mul(self.fake_B_5_1, self.seg_weights[0]), # Final segmentation result
                                      torch.mul(self.fake_B_5_2, self.seg_weights[1]),
                                      torch.mul(self.fake_B_5_3, self.seg_weights[2]),
                                      torch.mul(self.fake_B_5_4, self.seg_weights[3]),
@@ -165,7 +168,7 @@ class DeepLIIFModel(BaseModel):
         # torch.tensors.detach(): Returns a new tensor, detached from the current graph.
         #                         Suppose there are modelA and modelB, we need to take A's output as B's input,
         #                         and only optimize modelB during trainig. we can do this -> input_B = output_A.detach()
-        # by Zeeon.N_
+        # by Zeeon.N
 
         fake_AB_5_1 = torch.cat((self.real_A, self.fake_B_5), 1)    # Conditional GANs; feed IHC input and Segmentation mask output to the discriminator
         fake_AB_5_2 = torch.cat((self.real_B_1, self.fake_B_5), 1)  # Conditional GANs; feed Hematoxylin input and Segmentation mask output to the discriminator
