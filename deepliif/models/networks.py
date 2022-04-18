@@ -238,11 +238,25 @@ class GANLoss(nn.Module):
         super(GANLoss, self).__init__()
         self.register_buffer('real_label', torch.tensor(target_real_label))
         self.register_buffer('fake_label', torch.tensor(target_fake_label))
+        # added by Zeeon.N
+        # by using register_buffer, data which not be optimized can also be saved to the model
+        # when call model.cuda(), it is load into GPU automatically.
+        # added by Zeeon.N
+        
         self.gan_mode = gan_mode
         if gan_mode == 'lsgan':
             self.loss = nn.MSELoss()
+            # added by Zeeon.N
+            # Creates a criterion that measures the mean squared error (squared L2 norm) between each element in the input x and target y
+            # added by Zeeon.N
+            
         elif gan_mode == 'vanilla':
             self.loss = nn.BCEWithLogitsLoss()
+            
+            # added by Zeeon.N
+            # it combines sigmoid and BCEloss, which can make the computation more stable.
+            # BCELoss: 交叉熵损失
+            # added by Zeeon.N
         elif gan_mode in ['wgangp']:
             self.loss = None
         else:
@@ -266,6 +280,12 @@ class GANLoss(nn.Module):
         return target_tensor.expand_as(prediction)
 
     def __call__(self, prediction, target_is_real):
+        # added by Zeeon.N
+        # The __call__ method enables Python programmers to write classes where the instances behave like functions and can be called like a function. 
+        # When the instance is called as a function
+        # -> loss = GANLoss()
+        # -> returnloss = loss(prediction, target_is_real)
+        # added by Zeeon.N
         """Calculate loss given Discriminator's output and grount truth labels.
 
         Parameters:
