@@ -22,6 +22,10 @@ def is_image_file(filename):
 
 
 def make_dataset(dir, max_dataset_size=None):
+    """
+    added by Zeeon：
+    return list contains max_dataset_size images paths
+    """
     images = []
     assert os.path.isdir(dir), '%s is not a valid directory' % dir
 
