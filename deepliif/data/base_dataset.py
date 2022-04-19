@@ -81,13 +81,13 @@ def get_transform(preprocess, load_size, crop_size, no_flip, params=None, graysc
     transform_list = []
     preprocess = preprocess or []
     if grayscale:
-        transform_list.append(transforms.Grayscale(1))
+        transform_list.append(transforms.Grayscale(1))  # added by Zeeon.N:  params- num_output_channel
     if 'resize' in preprocess:
         osize = [load_size, load_size]
-        transform_list.append(transforms.Resize(osize, method))
+        transform_list.append(transforms.Resize(osize, method)) 
     elif 'scale_width' in preprocess:
         transform_list.append(transforms.Lambda(lambda img: __scale_width(img, load_size, crop_size, method)))
-
+        # added by Zeeon.N:  torchvision.transforms.Lambda: Apply a user-defined lambda as a transform.
     if 'crop' in preprocess:
         if params is None:
             transform_list.append(transforms.RandomCrop(crop_size))
@@ -113,6 +113,10 @@ def get_transform(preprocess, load_size, crop_size, no_flip, params=None, graysc
 
 
 def __make_power_2(img, base, method=Image.BICUBIC):
+    """
+    added by Zeeon:
+    if h, w are not multiple of 4, print warning info and adjusted the img to the nearest multiple of 4 numbers.
+    """
     ow, oh = img.size
     h = int(round(oh / base) * base)
     w = int(round(ow / base) * base)
@@ -124,15 +128,21 @@ def __make_power_2(img, base, method=Image.BICUBIC):
 
 
 def __scale_width(img, target_size, crop_size, method=Image.BICUBIC):
+    """
+    added by Zeeon: rescale the img while keeping the ratio , or make height equals crop_size when (target_size * oh / ow < crop_size)
+    """
     ow, oh = img.size
-    if ow == target_size and oh >= crop_size:
+    if ow == target_size and oh >= crop_size:  # added by Zeeon: not sure what crop_size do here.
         return img
-    w = target_size
-    h = int(max(target_size * oh / ow, crop_size))
+    w = target_size # added by Zeeon: target_size is the ideal width
+    h = int(max(target_size * oh / ow, crop_size))  # added by Zeeon: keep the ratio as the original (ow, oh) ratio.
     return img.resize((w, h), method)
 
 
 def __crop(img, pos, size):
+    """
+    added by Zeeon: a simple crop operation.
+    """
     ow, oh = img.size
     x1, y1 = pos
     tw = th = size
