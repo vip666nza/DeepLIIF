@@ -9,6 +9,11 @@ class AlignedDataset(BaseDataset):
 
     It assumes that the directory '/path/to/data/train' contains image pairs in the form of {A,B}.
     During test time, you need to prepare a directory '/path/to/data/test'.
+    
+    added by Zeeon:
+    read an concated AB image and split them into image A and image B
+    return data example of __getitem__ method:
+    {'A': tensor, 'B': [B1_tensor, B2_tensor, ...]}
     """
 
     def __init__(self, opt):
