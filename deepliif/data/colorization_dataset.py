@@ -59,8 +59,8 @@ class ColorizationDataset(BaseDataset):
         im = np.array(im)
         lab = color.rgb2lab(im).astype(np.float32)
         lab_t = transforms.ToTensor()(lab)
-        A = lab_t[[0], ...] / 50.0 - 1.0
-        B = lab_t[[1, 2], ...] / 110.0
+        A = lab_t[[0], ...] / 50.0 - 1.0  # added by Zeeon: [[0], ...] means get the first dim of array lab_t
+        B = lab_t[[1, 2], ...] / 110.0    # added by Zeeon: [[1, 2], ...] means get the second and third dim of array lab_t
         return {'A': A, 'B': B, 'A_paths': path, 'B_paths': path}
 
     def __len__(self):
