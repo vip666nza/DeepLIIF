@@ -8,6 +8,10 @@ import random
 class UnalignedDataset(BaseDataset):
     """
     This dataset class can load unaligned/unpaired datasets.
+    
+    added by Zeeon:
+    by using this class, we could generate negative training data
+    -------end add.
 
     It requires two directories to host training images from domain A '/path/to/data/trainA'
     and from domain B '/path/to/data/trainB' respectively.
