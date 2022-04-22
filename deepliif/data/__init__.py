@@ -34,9 +34,12 @@ def find_dataset_using_name(dataset_name):
     """
     dataset_filename = "deepliif.data." + dataset_name + "_dataset"
     datasetlib = importlib.import_module(dataset_filename)
+    # added by Zeeon: 动态引用
 
     dataset = None
     target_dataset_name = dataset_name.replace('_', '') + 'dataset'
+    # added by Zeeon: 在python类的内部，无论是类属性还是实例属性，都是以字典的形式进行存储的，
+    # 其中属性名作为键
     for name, cls in datasetlib.__dict__.items():
         if name.lower() == target_dataset_name.lower() \
                 and issubclass(cls, BaseDataset):
