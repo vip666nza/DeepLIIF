@@ -9,7 +9,9 @@ from deepliif.util import util
 
 def create_base_parser():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
+    # added by Zeeon: formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    #                 在使用help时，同时会给出default信息
+    
     # basic parameters
     parser.add_argument('--dataroot', required=True,
                         help='path to images (should have subfolders trainA, trainB, valA, valB, etc)')
@@ -18,6 +20,7 @@ def create_base_parser():
     parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
     parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
     parser.add_argument('--targets_no', type=int, default=5, help='number of targets')
+    
     # model parameters
     parser.add_argument('--model', type=str, default='DeepLIIF', help='chooses which model to use. [DeepLIIF]')
     parser.add_argument('--input_nc', type=int, default=3,
@@ -38,6 +41,7 @@ def create_base_parser():
     parser.add_argument('--init_gain', type=float, default=0.02,
                         help='scaling factor for normal, xavier and orthogonal.')
     parser.add_argument('--no_dropout', action='store_true', help='no dropout for the generator')
+    
     # dataset parameters
     parser.add_argument('--dataset_mode', type=str, default='aligned',
                         help='chooses how datasets are loaded. [unaligned | aligned | single | colorization]')
@@ -55,6 +59,7 @@ def create_base_parser():
     parser.add_argument('--no_flip', action='store_true',
                         help='if specified, do not flip the images for data augmentation')
     parser.add_argument('--display_winsize', type=int, default=512, help='display window size for both visdom and HTML')
+   
     # additional parameters
     parser.add_argument('--epoch', type=str, default='latest',
                         help='which epoch to load? set to latest to use latest cached model')
@@ -153,11 +158,12 @@ class BaseOptions():
     def create(self, dataroot, **kwargs):
         args = ['--dataroot', dataroot]
         for k, v in kwargs.items():
-            args.append(f'--{k}')
+            args.append(f'--{k}') # added by Zeeon: f-string, kind of format contorlling
             args.append(v)
 
         opt = self.parser.parse_args(args)
-
+        # added by Zeeon: why line159 - line164 is similar to self.read_options()?
+        
         # process opt.suffix
         if opt.suffix:
             suffix = ('_' + opt.suffix.format(**vars(opt))) if opt.suffix != '' else ''
