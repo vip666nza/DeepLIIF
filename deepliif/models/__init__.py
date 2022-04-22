@@ -51,7 +51,8 @@ def find_model_using_name(model_name):
     model_filename = "deepliif.models." + model_name + "_model"
     modellib = importlib.import_module(model_filename)
     model = None
-    target_model_name = model_name.replace('_', '') + 'model'
+    target_model_name = model_name.replace('_', '') + 'model'   # added by Zeeon: 在model_filename文件中，要有一个模型的class，命名为model_name.replace('_', '') + 'model'
+                                                                # 如果使用论文中的网络结构，也就是model_name='DeepLIIF',结合文件结构，能够理解。
     for name, cls in modellib.__dict__.items():
         if name.lower() == target_model_name.lower() \
                 and issubclass(cls, BaseModel):
@@ -92,6 +93,9 @@ def load_torchscript_model(model_pt_path, device):
 
 
 def load_eager_models(model_dir, devices):
+    """
+    added by Zeeon: 将这9部分模型实例化，并且赋予权重（加载预训练模型）
+    """
     input_nc = 3
     output_nc = 3
     ngf = 64
