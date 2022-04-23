@@ -93,6 +93,9 @@ class BaseOptions():
         self.initialize()
 
     def initialize(self):
+        # added by Zeeon:
+        # 在train_option, test_option类被实例化的时候，由于它们继承了Base_option，所以会先执行__init__()中的操作
+        # 即加载Base_option定义的parser后，调用重构的initialize()，加入train_args, test_args
         return NotImplementedError
 
     def gather_options(self):
