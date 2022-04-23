@@ -13,14 +13,14 @@ def remove_small_objects_from_image(img, min_size=100):
     image_copy = img.copy()
     image_copy[img > 0] = 1
     image_copy = image_copy.astype(bool)
-    removed_red_channel = remove_small_objects(image_copy, min_size=min_size).astype(np.uint8)
+    removed_red_channel = remove_small_objects(image_copy, min_size=min_size).astype(np.uint8) # added by Zeeon: Remove objects smaller than the specified size.
     img[removed_red_channel == 0] = 0
 
     return img
 
-
-def remove_background_noise(mask, mask_boundary):
-    labeled = skimage.measure.label(mask, background=0)
+# added by Zeeon: 需要结合其它代码，弄明白mask, mask_boundary的含义
+def remove_background_noise(mask, mask_boundary):       # added by Zeeon: what is mask_boundary?
+    labeled = skimage.measure.label(mask, background=0) # added by Zeeon: 对连通区域进行标记， background=0，将所有0值像素当作背景进行标记。
     padding = 5
     for i in range(1, len(np.unique(labeled))):
         component = np.zeros_like(mask)
@@ -59,6 +59,9 @@ def remove_cell_noise(mask1, mask2):
     return mask1, mask2
 
 
+# added by Zeeon:
+# Numba can only translate a certain subset of python code which involves loops and code involving numpy to faster machine code
+# https://coderzcolumn.com/tutorials/python/numba
 @jit(nopython=True)
 def compute_cell_mapping(new_mapping, image_size, small_object_size=20):
     marked = [[False for _ in range(image_size[1])] for _ in range(image_size[0])]
