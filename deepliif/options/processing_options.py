@@ -6,6 +6,7 @@ def create_base_parser():
     """Define the common options that are used in preprocessing."""
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
+    # added by Zeeon: required=Ture 表示必须传入的参数
     parser.add_argument('--input_dir', required=True, help='path to input images')
     parser.add_argument('--output_dir', required=False, type=str, default='', help='path to output images')
     parser.add_argument('--name', type=str, default='experiment_name',
@@ -41,7 +42,7 @@ class ProcessingOptions():
         """
         message = ''
         message += '----------------- Options ---------------\n'
-        for k, v in sorted(vars(opt).items()):
+        for k, v in sorted(vars(opt).items()):  # added by Zeeon: 
             comment = ''
             default = self.parser.get_default(k)
             if v != default:
