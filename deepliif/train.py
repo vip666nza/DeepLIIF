@@ -28,6 +28,7 @@ import torch
 
 def set_seed(seed=0,rank=None):
     """
+    by zeeon: 通过设置各个模块的种子，可以进行确定的训练
     seed: basic seed
     rank: rank of the current process, using which to mutate basic seed to have a unique seed per process
     
@@ -43,12 +44,13 @@ def set_seed(seed=0,rank=None):
 
         os.environ['PYTHONHASHSEED'] = str(seed_final)
         random.seed(seed_final)
-        np.random.seed(seed_final)
-        torch.manual_seed(seed_final)
-        torch.cuda.manual_seed(seed_final)
-        torch.cuda.manual_seed_all(seed_final)
-        torch.backends.cudnn.benchmark = False
-        torch.backends.cudnn.deterministic = True
+        np.random.seed(seed_final)                  # by zeeon:
+        torch.manual_seed(seed_final)               # sets the seed for generating random numbers.
+        torch.cuda.manual_seed(seed_final)          # Sets the seed for generating random numbers for the current GPU. 
+                                                    # It’s safe to call this function if CUDA is not available; in that case, it is silently ignored.
+        torch.cuda.manual_seed_all(seed_final)      # Sets the seed for generating random numbers on all GPUs. safe
+        torch.backends.cudnn.benchmark = False      # 当网络的输入不变时，设置为True可以加速训练
+        torch.backends.cudnn.deterministic = True   
         torch.use_deterministic_algorithms(True)
         print(f'deterministic training, seed set to {seed_final}')
         return True
