@@ -25,16 +25,19 @@ def chunker(iterable, size):
     for i in range(size):
         yield iterable[i::size]
 
-
+# by Zeeon: 具名元组，可以理解为创建了一个名为Tile的类，其属性有i, j, img
 Tile = collections.namedtuple('Tile', 'i, j, img')
 
 
 def output_size(img, tile_size):
+    # by Zeeon: 如果原始图像的width, height比tile_size小，就返回tile_size
+    #           如果原始图像的width, height比tile_size大，就返回n*tile_size，使得结果是tile_size的倍数，且与原始w,h最近
     return (max(round(img.width / tile_size) * tile_size, tile_size),
             max(round(img.height / tile_size) * tile_size, tile_size))
 
 
 def generate_tiles(img, tile_size, overlap_size):
+    # by Zeeon: 从一副较大的图象上，分割出若干tile_size大小的image
     img = img.resize(output_size(img, tile_size))
     # Adding borders with size of given overlap around the whole slide image
     img = ImageOps.expand(img, border=overlap_size, fill='white')
@@ -52,6 +55,7 @@ def generate_tiles(img, tile_size, overlap_size):
 
 
 def stitch(tiles, tile_size, overlap_size):
+    # by Zeeon: 将上一步generate_tiles函数的逆操作
     rows = max(t.i for t in tiles) + 1
     cols = max(t.j for t in tiles) + 1
 
