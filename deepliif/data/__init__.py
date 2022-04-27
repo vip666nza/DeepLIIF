@@ -32,7 +32,12 @@ def find_dataset_using_name(dataset_name):
     be instantiated. It has to be a subclass of BaseDataset,
     and it is case-insensitive.
     """
-    dataset_filename = "deepliif.data." + dataset_name + "_dataset"
+    
+    # 以dataset_name == 'aligned'为例
+    # dataset_filename == deepliif.data.aligned_dateset
+    # target_dataset_name = aligneddataset
+    # deepliif.data.aligned_dateset.__dict__都有啥：
+    dataset_filename = "deepliif.data." + dataset_name + "_dataset" 
     datasetlib = importlib.import_module(dataset_filename)
     # added by Zeeon: 动态引用
 
