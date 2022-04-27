@@ -198,7 +198,9 @@ def train(dataroot, name, gpu_ids, checkpoints_dir, targets_no, input_nc, output
     # dataset是AlignedDataset的实例，从相应目录中。将AB_stiched的图片，分成A,B1,B2...并施加preprocessing，
     # __getitem__返回的格式 {'A': tensor, 'B': [B1_tensor, B2_tensor, ...]}
     
-    dataset = create_dataset(dataset, batch_size, serial_batches, num_threads, max_dataset_size, gpu_ids)
+    dataset = create_dataset(dataset, batch_size, serial_batches, num_threads, max_dataset_size, gpu_ids) 
+    # 不明白把dataset这个对象传进去是什么意思，是作为参数dataset_mode吗？
+    
     # get the number of images in the dataset.
     click.echo('The number of training images = %d' % len(dataset))
 
