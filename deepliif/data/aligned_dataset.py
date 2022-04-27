@@ -23,11 +23,14 @@ class AlignedDataset(BaseDataset):
             opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
         """
         BaseDataset.__init__(self, opt.dataroot)
-        self.preprocess = opt.preprocess
-        self.dir_AB = os.path.join(opt.dataroot, opt.phase)  # get the image directory
+        self.preprocess = opt.preprocess   # resize_and_crop | crop | scale_width | scale_width_and_crop | none，稍后通过调用get_transform实现
+        self.dir_AB = os.path.join(opt.dataroot, opt.phase)  # get the image directory should have subfolders trainA, trainB, valA, valB, etc
+                                                             # phase是阶段，train | val | test
+                                                             # self.dir_AB的一个例子 ./deepliif_data/train   是一个文件夹
         self.AB_paths = sorted(make_dataset(self.dir_AB, opt.max_dataset_size))  # get image paths
+                                                                                 # make_dataset返回的是一个列表，元素为具体的图像路径
         assert(opt.load_size >= opt.crop_size)   # crop_size should be smaller than the size of loaded image
-        self.input_nc = opt.output_nc if opt.direction == 'BtoA' else opt.input_nc
+        self.input_nc = opt.output_nc if opt.direction == 'BtoA' else opt.input_nc  # 忘了BtoA和AtoB的含义了  如果是BtoA，input_nc和output_nc与参数传入的相反
         self.output_nc = opt.input_nc if opt.direction == 'BtoA' else opt.output_nc
         self.no_flip = opt.no_flip
         self.targets_no = opt.targets_no
@@ -58,6 +61,7 @@ class AlignedDataset(BaseDataset):
         transform_params = get_params(self.preprocess, self.load_size, self.crop_size, A.size)
         A_transform = get_transform(self.preprocess, self.load_size, self.crop_size, self.no_flip, transform_params, grayscale=(self.input_nc == 1))
         B_transform = get_transform(self.preprocess, self.load_size, self.crop_size, self.no_flip, transform_params, grayscale=(self.output_nc == 1))
+        # get_transform返回的是transforms.Compose
 
         A = A_transform(A)
         B_Array = []
