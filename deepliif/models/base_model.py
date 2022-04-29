@@ -80,6 +80,7 @@ class BaseModel(ABC):
         if self.is_train:
             self.schedulers = [networks.get_scheduler(optimizer, opt) for optimizer in self.optimizers]
         if not self.is_train or opt.continue_train:
+            # by zeeon: 可以设置为继续训练，将相应轮次的后缀传入，调用load_networks，将相应的权重文件load进网络。
             load_suffix = 'iter_%d' % opt.load_iter if opt.load_iter > 0 else opt.epoch
             self.load_networks(load_suffix)
         self.print_networks(opt.verbose)
@@ -203,10 +204,11 @@ class BaseModel(ABC):
             epoch (int) -- current epoch; used in the file name '%s_net_%s.pth' % (epoch, name)
         """
         for name in self.model_names:
+            # by zeeon: name的形式 G1, G2... G51... D1... D51,
             if isinstance(name, str):
-                load_filename = '%s_net_%s.pth' % (epoch, name)
+                load_filename = '%s_net_%s.pth' % (epoch, name)     # 例如：100_net_G1.pth
                 load_path = os.path.join(self.save_dir, load_filename)
-                net = getattr(self, 'net' + name)
+                net = getattr(self, 'net' + name)                   # 例如： netG1,与deepliif_model中文件命名相同
                 if isinstance(net, torch.nn.DataParallel):
                     net = net.module
                 print('loading the model from %s' % load_path)
@@ -214,6 +216,7 @@ class BaseModel(ABC):
                 # GitHub source), you can remove str() on self.device
                 state_dict = torch.load(load_path, map_location=str(self.device))
                 if hasattr(state_dict, '_metadata'):
+                    # by zeeon: 删除state_dict下_metadata属性,_metadata保存的是版本信息
                     del state_dict._metadata
 
                 # patch InstanceNorm checkpoints prior to 0.4
